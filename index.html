@@ -3,387 +3,232 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Artics POS Pro - Ramos Generales</title>
+    <title>Sergio Daniel Flores | Abogado de Familia en Córdoba</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;600&display=swap"
       rel="stylesheet"
-      href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"
     />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
   </head>
-  <body>
-    <div id="sidebarRubros" class="sidebar-collapsed">
-      <div class="p-3">
-        <h6 class="text-white small fw-bold mb-4 title-sidebar text-uppercase">
-          Rubros
-        </h6>
-        <div id="contenedorBotonesRubros" class="d-grid gap-2"></div>
-        <hr class="text-white-50 mt-4" />
+  <body class="dark-mode">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+      <div class="container">
+        <a class="navbar-brand gold-text" href="#">SERGIO DANIEL FLORES</a>
         <button
-          class="btn btn-outline-danger btn-sm w-100 mt-2"
-          onclick="limpiarFiltros()"
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-label="Menú"
         >
-          Limpiar Filtros
+          <span class="navbar-toggler-icon"></span>
         </button>
-      </div>
-    </div>
-
-    <div id="mainContent">
-      <nav class="navbar navbar-dark bg-dark shadow-sm p-3 mb-4">
-        <div class="container-fluid px-4">
-          <span class="navbar-brand fw-bold">RAMOS GENERALES - Artics</span>
-          <div class="d-flex gap-2">
-            <button
-              class="btn btn-outline-info btn-sm"
-              onclick="alert('Ventas del día: $' + calcularVentasDia())"
-            >
-              📊 Reporte
-            </button>
-            <button
-              class="btn btn-danger btn-sm"
-              onclick="realizarCierreCaja()"
-            >
-              🔒 Cierre
-            </button>
-          </div>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#inicio">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#servicios">Servicios</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contacto">Contacto</a>
+            </li>
+          </ul>
         </div>
-      </nav>
+      </div>
+    </nav>
 
-      <div class="container-fluid px-4">
+    <header id="inicio" class="hero-section d-flex align-items-center">
+      <div class="container text-center" data-aos="fade-up">
+        <h1 class="display-3 fw-bold mb-4">
+          Soluciones Claras para tu Familia
+        </h1>
+        <p class="lead mb-5 text-white">
+          Asesoramiento legal humano y objetivo en Córdoba. Recuperá la
+          tranquilidad que merecés.
+        </p>
+        <a href="#contacto" class="btn btn-primary btn-lg px-5"
+          >Solicitar Consulta</a
+        >
+      </div>
+    </header>
+
+    <section id="servicios" class="py-5">
+      <div class="container">
+        <h2
+          class="text-center mb-5 display-5 fw-bold gold-text"
+          data-aos="fade-up"
+        >
+          Asistencia Jurídica Especializada
+        </h2>
         <div class="row g-4">
-          <div class="col-lg-5">
-            <div class="card card-pos p-4 mb-4">
-              <div class="mb-3">
-                <label class="small fw-bold text-secondary text-uppercase"
-                  >Clientes</label
-                >
-                <div class="input-group">
-                  <select
-                    id="selectCliente"
-                    class="form-select shadow-sm"
-                  ></select>
-                  <button
-                    class="btn btn-outline-secondary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalCliente"
-                  >
-                    +
-                  </button>
-                </div>
+          <div class="col-md-4" data-aos="slide-up" data-aos-delay="100">
+            <div class="card h-100">
+              <div class="img-container">
+                <img
+                  src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=800"
+                  class="card-img-top"
+                  alt="Cuidado Personal"
+                />
               </div>
-
-              <div class="mb-4">
-                <label class="small fw-bold text-secondary text-uppercase"
-                  >Vendedores</label
-                >
-                <div class="input-group">
-                  <select
-                    id="selectVendedor"
-                    class="form-select shadow-sm"
-                  ></select>
-                  <button
-                    class="btn btn-outline-secondary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalVendedor"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-
-              <hr />
-
-              <div
-                class="d-flex justify-content-between align-items-center mb-2"
-              >
-                <label class="small fw-bold text-secondary text-uppercase mb-0"
-                  >Artículos</label
-                >
-                <div class="d-flex gap-1">
-                  <button
-                    class="btn btn-dark btn-sm fw-bold"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalArticulo"
-                  >
-                    + Artículo
-                  </button>
-                  <button
-                    class="btn btn-outline-dark btn-sm fw-bold"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalRubro"
-                  >
-                    + Rubro
-                  </button>
-                </div>
-              </div>
-              <input
-                type="text"
-                id="barcodeInput"
-                class="form-control form-control-lg mb-3"
-                placeholder="Código + Enter"
-                autofocus
-              />
-            </div>
-
-            <div class="card card-pos p-4">
-              <h6 class="fw-bold text-muted mb-3 text-uppercase small">
-                Catálogo Disponible
-              </h6>
-              <div class="table-responsive">
-                <table
-                  id="tablaBusqueda"
-                  class="table table-sm align-middle w-100 small"
-                >
-                  <thead>
-                    <tr>
-                      <th>Producto</th>
-                      <th>Stock</th>
-                      <th>Acción</th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
+              <div class="card-body">
+                <h5 class="card-title gold-text">Cuidado y Comunicación</h5>
+                <p class="card-text text-muted card-text-color">
+                  Régimen de comunicación, cuidado personal de hijos y
+                  autorizaciones para viajar.
+                </p>
               </div>
             </div>
           </div>
-
-          <div class="col-lg-7">
-            <div class="card card-pos p-4 h-100">
-              <h6 class="fw-bold text-muted mb-3 text-uppercase small">
-                Detalle de Venta
-              </h6>
-              <div class="table-responsive">
-                <table id="tablaCarrito" class="table align-middle w-100">
-                  <thead>
-                    <tr>
-                      <th>Detalle</th>
-                      <th>Precio</th>
-                      <th>Cant.</th>
-                      <th>Subtotal</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
+          <div class="col-md-4" data-aos="slide-up" data-aos-delay="200">
+            <div class="card h-100">
+              <div class="img-container">
+                <img
+                  src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=800"
+                  class="card-img-top"
+                  alt="Derecho Alimentario"
+                />
               </div>
+              <div class="card-body">
+                <h5 class="card-title gold-text">Cuota Alimentaria</h5>
+                <p class="card-text text-muted card-text-color">
+                  Fijación, aumento, cese y ejecución de deudas alimentarias con
+                  rigor técnico.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4" data-aos="slide-up" data-aos-delay="300">
+            <div class="card h-100">
+              <div class="img-container">
+                <img
+                  src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=800"
+                  class="card-img-top"
+                  alt="Patrimonio Familiar"
+                />
+              </div>
+              <div class="card-body">
+                <h5 class="card-title gold-text">Patrimonio y Divorcio</h5>
+                <p class="card-text text-muted card-text-color">
+                  Distribución de bienes, compensaciones económicas y uso de la
+                  vivienda familiar.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-              <div
-                class="mt-auto d-flex justify-content-between align-items-center border-top pt-4"
-              >
-                <div>
-                  <span class="text-muted small fw-bold">TOTAL</span>
-                  <h1 class="fw-bold mb-0">
-                    $ <span id="txtTotal">0.00</span>
-                  </h1>
+    <section id="contacto" class="py-5 bg-darker">
+      <div class="container" data-aos="fade-in">
+        <div class="row justify-content-center">
+          <div class="col-md-8">
+            <div class="contact-card p-4 p-md-5">
+              <h2 class="text-center gold-text mb-4">
+                Iniciemos un camino hacia tu tranquilidad
+              </h2>
+              <form id="contactForm">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label"
+                      >¿Cómo te gustaría que me dirija a vos?</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Nombre completo"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label"
+                      >¿Cómo preferís que te contacte?</label
+                    >
+                    <select class="form-select">
+                      <option>WhatsApp</option>
+                      <option>Llamada</option>
+                      <option>Email</option>
+                    </select>
+                  </div>
                 </div>
-                <button
-                  class="btn btn-success btn-lg px-5 py-3 shadow-hover fw-bold"
-                  onclick="prepararCobro()"
-                >
-                  FINALIZAR VENTA
+                <div class="mb-3">
+                  <label class="form-label">Tu número de teléfono</label>
+                  <input
+                    type="tel"
+                    id="telefonoCliente"
+                    class="form-control"
+                    placeholder="Ej: 3517664230"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label"
+                    >¿Cuál es el tema de tu consulta?</label
+                  >
+                  <select class="form-select">
+                    <option>Cuota Alimentaria</option>
+                    <option>Cuidado Personal / Régimen de comunicación</option>
+                    <option>Divorcio / Separación de bienes</option>
+                    <option>Filiación / Adopción / Paternidad</option>
+                    <option>Otro asunto familiar</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label"
+                    >Contame brevemente tu situación</label
+                  >
+                  <textarea
+                    class="form-control"
+                    rows="4"
+                    placeholder="Mi compromiso es escucharte con empatía y trabajar duro en tu caso..."
+                  ></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-3 mt-3">
+                  SOLICITAR ASESORAMIENTO PROFESIONAL
                 </button>
-              </div>
+              </form>
+              <p class="small text-center mt-4 text-muted">
+                Consulta confidencial conforme al código arancelario de Córdoba.
+              </p>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="modal fade" id="modalCliente" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content card-pos p-3">
-          <div class="modal-header border-0"><h5>Nuevo Cliente</h5></div>
-          <div class="modal-body">
-            <input
-              type="text"
-              id="cNombre"
-              class="form-control mb-2"
-              placeholder="Nombre"
-            />
-            <input
-              type="text"
-              id="cTelefono"
-              class="form-control mb-2"
-              placeholder="Teléfono"
-            />
-            <input
-              type="text"
-              id="cLocalidad"
-              class="form-control"
-              placeholder="Localidad"
-              value="Córdoba"
-            />
-          </div>
-          <div class="modal-footer border-0">
-            <button class="btn btn-light" data-bs-dismiss="modal">Salir</button
-            ><button class="btn btn-dark" onclick="guardarCliente()">
-              Registrar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <footer class="text-center py-4 border-top border-secondary mt-5">
+      <p class="mb-0 text-muted footer-text-color">
+        &copy; 2026 Sergio Daniel Flores - Abogado Mat. Prof. Córdoba
+      </p>
+    </footer>
 
-    <div class="modal fade" id="modalVendedor" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content card-pos p-3">
-          <div class="modal-header border-0"><h5>Nuevo Vendedor</h5></div>
-          <div class="modal-body">
-            <input
-              type="text"
-              id="vNombre"
-              class="form-control mb-2"
-              placeholder="Nombre"
-            />
-            <input
-              type="number"
-              id="vComision"
-              class="form-control"
-              placeholder="% Comisión"
-            />
-          </div>
-          <div class="modal-footer border-0">
-            <button class="btn btn-light" data-bs-dismiss="modal">Salir</button
-            ><button class="btn btn-dark" onclick="guardarVendedor()">
-              Registrar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal fade" id="modalArticulo" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content card-pos p-3">
-          <div class="modal-header border-0"><h5>Nuevo Artículo</h5></div>
-          <div class="modal-body">
-            <input
-              type="text"
-              id="pCodigo"
-              class="form-control mb-2"
-              placeholder="Código"
-            />
-            <input
-              type="text"
-              id="pNombre"
-              class="form-control mb-2"
-              placeholder="Nombre"
-            />
-            <select id="pRubro" class="form-select mb-2"></select>
-            <input
-              type="number"
-              id="pPrecio"
-              class="form-control mb-2"
-              placeholder="Precio"
-            />
-            <input
-              type="number"
-              id="pStock"
-              class="form-control"
-              placeholder="Stock"
-            />
-          </div>
-          <div class="modal-footer border-0">
-            <button class="btn btn-light" data-bs-dismiss="modal">Salir</button
-            ><button class="btn btn-dark" onclick="guardarNuevoArticulo()">
-              Guardar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal fade" id="modalRubro" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content card-pos p-3">
-          <div class="modal-header border-0"><h5>Nuevo Rubro</h5></div>
-          <div class="modal-body">
-            <input
-              type="text"
-              id="rId"
-              class="form-control mb-2"
-              placeholder="ID (Ej: BEB)"
-            />
-            <input
-              type="text"
-              id="rNombre"
-              class="form-control"
-              placeholder="Nombre"
-            />
-          </div>
-          <div class="modal-footer border-0">
-            <button class="btn btn-light" data-bs-dismiss="modal">Salir</button
-            ><button class="btn btn-dark" onclick="guardarRubro()">
-              Guardar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div
-      class="modal fade"
-      id="modalConfirmarCobro"
-      tabindex="-1"
-      data-bs-backdrop="static"
+    <a
+      href="https://wa.me/5493517664230?text=Hola%20Sergio,%20necesito%20realizar%20una%20consulta%20sobre%20derecho%20de%20familia."
+      class="whatsapp-float"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Contactar por WhatsApp"
+      data-aos="fade-left"
+      data-aos-delay="1000"
     >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content card-pos p-3">
-          <div class="modal-header border-0">
-            <h5 class="fw-bold">Cobrar Venta</h5>
-          </div>
-          <div class="modal-body">
-            <input
-              type="text"
-              id="infoNombreTicket"
-              class="form-control mb-2"
-              placeholder="Nombre"
-            />
-            <input
-              type="text"
-              id="infoTelTicket"
-              class="form-control mb-2"
-              placeholder="WhatsApp"
-            />
-            <p class="text-center fw-bold fs-4 text-success">
-              Total: $<span id="totalConfirmar">0.00</span>
-            </p>
-          </div>
-          <div class="modal-footer border-0 flex-column gap-2">
-            <button
-              class="btn btn-success w-100 fw-bold"
-              onclick="finalizarVenta('imprimir')"
-            >
-              🖨️ IMPRIMIR
-            </button>
-            <button
-              class="btn btn-primary w-100 fw-bold"
-              onclick="finalizarVenta('whatsapp')"
-            >
-              📱 WHATSAPP
-            </button>
-            <button
-              class="btn btn-light border w-100"
-              onclick="confirmarVolver()"
-            >
-              ↩️ VOLVER
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+      <svg viewBox="0 0 448 512" width="30" height="30">
+        <path
+          fill="currentColor"
+          d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-12.6-6.3-23.6-11.6-34-19.6-10.4-8-19.1-17.7-25.9-28.9-3.2-5.6-.3-8.8 2.4-11.6 2.5-2.4 5.5-6.5 8.3-9.7 2.8-3.3 3.7-5.6 5.5-9.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"
+        ></path>
+      </svg>
+      <span class="whatsapp-tooltip">Consulta Rápida</span>
+    </a>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

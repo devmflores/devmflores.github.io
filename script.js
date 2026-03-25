@@ -1,280 +1,194 @@
-const semillas = {
-  rubros: [
-    { id: "ALM", nombre: "Almacén" },
-    { id: "BEB", nombre: "Bebidas" },
-  ],
-  articulos: [
-    {
-      id: "779001",
-      nombre: "Huevos Maple x30",
-      idRubro: "ALM",
-      precio: 3500,
-      stock: 20,
-    },
-  ],
-  clientes: [{ id: "C1", nombre: "Consumidor Final", telefono: "" }],
-  vendedores: [{ id: "V1", nombre: "Marcelo Admin", comision: 5 }],
-};
+/**
+ * ARCHIVO: script.js
+ * FUNCIÓN: Lógica de interactividad, animaciones y validación de formulario.
+ * CLIENTE: Sergio Daniel Flores - Abogacía de Familia
+ */
 
-let db = {
-  rubros: JSON.parse(localStorage.getItem("rubros")) || semillas.rubros,
-  articulos:
-    JSON.parse(localStorage.getItem("articulos")) || semillas.articulos,
-  clientes: JSON.parse(localStorage.getItem("clientes")) || semillas.clientes,
-  vendedores:
-    JSON.parse(localStorage.getItem("vendedores")) || semillas.vendedores,
-  ventasDia: JSON.parse(localStorage.getItem("ventasDia")) || [],
-};
+document.addEventListener("DOMContentLoaded", () => {
+  // 1. INICIALIZACIÓN DE AOS (Animate On Scroll)
+  // Controla la entrada suave de títulos y textos configurados en el HTML.
+  if (typeof AOS !== "undefined") {
+    AOS.init({
+      duration: 1000, // Duración de la animación (1 segundo)
+      easing: "ease-in-out", // Transición suave
+      once: true, // La animación solo ocurre la primera vez que se ve
+      mirror: false,
+      anchorPlacement: "top-bottom",
+    });
+  }
 
-let carrito = [];
-let filtrosRubros = [];
-let dtCarrito, dtBusqueda;
+  // 2. SCROLL SUAVE (Smooth Scroll)
+  // Mejora la navegación interna para que el usuario no sienta un salto brusco.
+  const menuLinks = document.querySelectorAll(".nav-link, .btn-primary");
 
-$(document).ready(function () {
-  dtCarrito = $("#tablaCarrito").DataTable({
-    paging: false,
-    info: false,
-    searching: false,
+  menuLinks.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      const targetId = this.getAttribute("href");
+
+      // Verificamos que sea un enlace interno
+      if (targetId && targetId.startsWith("#")) {
+        e.preventDefault();
+        const targetElement = document.querySelector(targetId);
+
+        if (targetElement) {
+          // Calculamos la posición considerando la altura del Navbar (sticky)
+          const offset = 80;
+          const elementPosition = targetElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth",
+          });
+
+          // Si el menú móvil está abierto, lo cerramos al hacer clic
+          const navbarCollapse = document.querySelector(".navbar-collapse");
+          if (navbarCollapse && navbarCollapse.classList.contains("show")) {
+            const bsCollapse = new bootstrap.Collapse(navbarCollapse);
+            bsCollapse.hide();
+          }
+        }
+      }
+    });
   });
-  dtBusqueda = $("#tablaBusqueda").DataTable({
-    paging: true,
-    pageLength: 5,
-    info: false,
-    lengthChange: false,
-    dom: '<"float-start"f>tpi',
-    language: { search: "🔍 Buscar:", zeroRecords: "No hay resultados" },
-  });
 
-  actualizarCombos();
-  renderizarBotonesRubros();
-  filtrarArticulos();
+  // 3. GESTIÓN DEL FORMULARIO DE CONTACTO
+  // Implementa feedback visual inmediato y previene envíos vacíos.
+  // 3.1. Lógica de Envío a WhatsApp
+  const contactForm = document.getElementById("contactForm");
 
-  $("#barcodeInput").on("keypress", function (e) {
-    if (e.which == 13) {
-      agregarAlCarrito($(this).val());
-      $(this).val("").focus();
+  if (contactForm) {
+    contactForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      // Captura de datos del formulario
+      const nombre = this.querySelector('input[type="text"]').value;
+      const metodoContacto = this.querySelectorAll("select")[0].value;
+      const telCliente = document.getElementById("telefonoCliente").value;
+      const tema = this.querySelectorAll("select")[1].value;
+      const mensaje = this.querySelector("textarea").value;
+      const telefonoDestino = "5493517664230";
+
+      // Construcción del mensaje para WhatsApp
+      // El uso de %0A representa un salto de línea en la URL
+      const textoWhatsApp =
+        `Hola, mi nombre es *${nombre}* %0A` +
+        `Mi teléfono de contacto: *${telCliente}* %0A` +
+        `Me contacto por el tema: *${tema}* %0A` +
+        `Preferencia de contacto: ${metodoContacto} %0A` +
+        `Consulta: ${mensaje}`;
+
+      // Crear la URL de WhatsApp
+      const urlWhatsApp = `https://wa.me/${telefonoDestino}?text=${textoWhatsApp}`;
+
+      // Feedback visual antes de redireccionar
+      const submitBtn = this.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerText = "ABRIENDO WHATSAPP...";
+
+      setTimeout(() => {
+        // Abrir en una nueva pestaña
+        window.open(urlWhatsApp, "_blank");
+
+        // Restaurar botón y formulario
+        submitBtn.disabled = false;
+        submitBtn.innerText = "SOLICITAR ASESORAMIENTO PROFESIONAL";
+        contactForm.reset();
+      }, 1000);
+    });
+  }
+
+  //   const contactForm = document.getElementById("contactForm");
+
+  //   if (contactForm) {
+  //     contactForm.addEventListener("submit", function (e) {
+  //       e.preventDefault();
+
+  //       const submitBtn = this.querySelector('button[type="submit"]');
+  //       const originalText = submitBtn.innerHTML;
+
+  //       // Feedback Visual: Estado de carga
+  //       submitBtn.disabled = true;
+  //       submitBtn.innerHTML = `
+  //                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+  //                 PROCESANDO...
+  //             `;
+
+  //       // Simulación de envío (Aquí se integraría con el backend o servicio de mail)
+  //       setTimeout(() => {
+  //         // Mensaje de éxito humanizado según tu perfil
+  //         alert(
+  //           "Consulta recibida. Sergio Daniel Flores se comunicará con vos a la brevedad para brindarte el asesoramiento claro y objetivo que necesitás.",
+  //         );
+
+  //         // Restaurar formulario
+  //         contactForm.reset();
+  //         submitBtn.disabled = false;
+  //         submitBtn.innerHTML = originalText;
+
+  //         // Reiniciar animaciones de AOS para el feedback visual si fuera necesario
+  //         AOS.refresh();
+  //       }, 2000);
+  //     });
+  //   }
+
+  // 4. EFECTOS DINÁMICOS EN NAVBAR (OPCIONAL)
+  // Añade una sombra al navbar cuando el usuario hace scroll para dar profundidad.
+  window.addEventListener("scroll", () => {
+    const navbar = document.querySelector(".navbar");
+    if (window.scrollY > 50) {
+      navbar.style.boxShadow = "0 10px 30px rgba(0,0,0,0.5)";
+      navbar.style.backgroundColor = "rgba(13, 13, 13, 0.98)";
+    } else {
+      navbar.style.boxShadow = "none";
+      navbar.style.backgroundColor = "rgba(13, 13, 13, 0.95)";
     }
   });
 });
 
-function renderizarBotonesRubros() {
-  let html = db.rubros
-    .map(
-      (r) => `
-        <button class="btn-rubro ${filtrosRubros.includes(r.id) ? "active" : ""}" onclick="toggleFiltro('${r.id}')">
-            📁 ${r.nombre}
-        </button>
-    `,
-    )
-    .join("");
-  $("#contenedorBotonesRubros").html(html);
-}
+document.addEventListener("DOMContentLoaded", () => {
+  // 1. Inicialización de AOS (Animaciones)
+  AOS.init({ duration: 1000, once: true });
 
-function toggleFiltro(id) {
-  if (filtrosRubros.includes(id)) {
-    filtrosRubros = filtrosRubros.filter((f) => f !== id);
-  } else {
-    filtrosRubros.push(id);
+  // 2. Lógica de Envío a WhatsApp
+  const contactForm = document.getElementById("contactForm");
+
+  if (contactForm) {
+    contactForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      // Captura de datos del formulario
+      const nombre = this.querySelector('input[type="text"]').value;
+      const metodoContacto = this.querySelectorAll("select")[0].value;
+      const tema = this.querySelectorAll("select")[1].value;
+      const mensaje = this.querySelector("textarea").value;
+      const telefonoDestino = "5493517664230";
+
+      // Construcción del mensaje para WhatsApp
+      // El uso de %0A representa un salto de línea en la URL
+      const textoWhatsApp =
+        `Hola, mi nombre es *${nombre}* %0A` +
+        `Me contacto por el tema: *${tema}* %0A` +
+        `Preferencia de contacto: ${metodoContacto} %0A` +
+        `Consulta: ${mensaje}`;
+
+      // Crear la URL de WhatsApp
+      const urlWhatsApp = `https://wa.me/${telefonoDestino}?text=${textoWhatsApp}`;
+
+      // Feedback visual antes de redireccionar
+      const submitBtn = this.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerText = "ABRIENDO WHATSAPP...";
+
+      setTimeout(() => {
+        // Abrir en una nueva pestaña
+        window.open(urlWhatsApp, "_blank");
+
+        // Restaurar botón y formulario
+        submitBtn.disabled = false;
+        submitBtn.innerText = "SOLICITAR ASESORAMIENTO PROFESIONAL";
+        contactForm.reset();
+      }, 1000);
+    });
   }
-  renderizarBotonesRubros();
-  filtrarArticulos();
-}
-
-function limpiarFiltros() {
-  filtrosRubros = [];
-  renderizarBotonesRubros();
-  filtrarArticulos();
-}
-
-function filtrarArticulos() {
-  dtBusqueda.clear();
-  let lista =
-    filtrosRubros.length === 0
-      ? db.articulos
-      : db.articulos.filter((a) => filtrosRubros.includes(a.idRubro));
-  lista.forEach((a) => {
-    dtBusqueda.row.add([
-      `<strong>${a.nombre}</strong><br><small class="text-muted">$${a.precio}</small>`,
-      `<span class="badge ${a.stock < 5 ? "bg-danger" : "bg-dark"}">${a.stock}</span>`,
-      `<button class="btn btn-sm btn-success fw-bold" onclick="agregarAlCarrito('${a.id}')">+</button>`,
-    ]);
-  });
-  dtBusqueda.draw();
-}
-
-function agregarAlCarrito(id) {
-  let art = db.articulos.find((a) => a.id === id);
-  if (art && art.stock > 0) {
-    art.stock--;
-    let enC = carrito.find((i) => i.id === id);
-    if (enC) enC.cantidad++;
-    else carrito.push({ ...art, cantidad: 1 });
-    actualizarVista();
-    filtrarArticulos();
-  } else if (art) {
-    alert("¡Sin stock!");
-  }
-}
-
-function modCant(idx, val) {
-  let item = carrito[idx];
-  let art = db.articulos.find((a) => a.id === item.id);
-  if (val > 0 && art.stock > 0) {
-    item.cantidad++;
-    art.stock--;
-  } else if (val < 0 && item.cantidad > 1) {
-    item.cantidad--;
-    art.stock++;
-  }
-  actualizarVista();
-  filtrarArticulos();
-}
-
-function eliminar(idx) {
-  db.articulos.find((a) => a.id === carrito[idx].id).stock +=
-    carrito[idx].cantidad;
-  carrito.splice(idx, 1);
-  actualizarVista();
-  filtrarArticulos();
-}
-
-function actualizarVista() {
-  dtCarrito.clear();
-  let total = 0;
-  carrito.forEach((i, idx) => {
-    let sub = i.precio * i.cantidad;
-    total += sub;
-    dtCarrito.row.add([
-      i.nombre,
-      `$${i.precio}`,
-      `<button class="btn btn-sm btn-light border" onclick="modCant(${idx},-1)">-</button> <span class="mx-2 fw-bold">${i.cantidad}</span> <button class="btn btn-sm btn-light border" onclick="modCant(${idx},1)">+</button>`,
-      `$${sub.toLocaleString()}`,
-      `<button class="btn btn-sm btn-outline-danger border-0" onclick="eliminar(${idx})">×</button>`,
-    ]);
-  });
-  dtCarrito.draw();
-  $("#txtTotal").text(total.toLocaleString("es-AR"));
-  if (total >= 15000) $("#txtTotal").addClass("text-success-premium");
-  else $("#txtTotal").removeClass("text-success-premium");
-}
-
-function guardarCliente() {
-  db.clientes.push({
-    id: "C" + Date.now(),
-    nombre: $("#cNombre").val(),
-    telefono: $("#cTelefono").val(),
-  });
-  localStorage.setItem("clientes", JSON.stringify(db.clientes));
-  actualizarCombos();
-  $("#modalCliente").modal("hide");
-}
-
-function guardarVendedor() {
-  db.vendedores.push({
-    id: "V" + Date.now(),
-    nombre: $("#vNombre").val(),
-    comision: $("#vComision").val(),
-  });
-  localStorage.setItem("vendedores", JSON.stringify(db.vendedores));
-  actualizarCombos();
-  $("#modalVendedor").modal("hide");
-}
-
-function guardarRubro() {
-  db.rubros.push({
-    id: $("#rId").val().toUpperCase(),
-    nombre: $("#rNombre").val(),
-  });
-  localStorage.setItem("rubros", JSON.stringify(db.rubros));
-  renderizarBotonesRubros();
-  actualizarCombos();
-  $("#modalRubro").modal("hide");
-}
-
-function guardarNuevoArticulo() {
-  const art = {
-    id: $("#pCodigo").val(),
-    nombre: $("#pNombre").val(),
-    idRubro: $("#pRubro").val(),
-    precio: parseFloat($("#pPrecio").val()),
-    stock: parseInt($("#pStock").val()),
-  };
-  db.articulos.push(art);
-  localStorage.setItem("articulos", JSON.stringify(db.articulos));
-  filtrarArticulos();
-  $("#modalArticulo").modal("hide");
-}
-
-function actualizarCombos() {
-  $("#pRubro")
-    .empty()
-    .append(
-      db.rubros.map((r) => `<option value="${r.id}">${r.nombre}</option>`),
-    );
-  $("#selectCliente")
-    .empty()
-    .append(
-      db.clientes.map((c) => `<option value="${c.id}">${c.nombre}</option>`),
-    );
-  $("#selectVendedor")
-    .empty()
-    .append(
-      db.vendedores.map((v) => `<option value="${v.id}">${v.nombre}</option>`),
-    );
-}
-
-function prepararCobro() {
-  if (carrito.length === 0) return;
-  const cli = db.clientes.find((c) => c.id === $("#selectCliente").val()) || {
-    nombre: "C. Final",
-    telefono: "",
-  };
-  $("#totalConfirmar").text($("#txtTotal").text());
-  $("#infoNombreTicket").val(cli.nombre);
-  $("#infoTelTicket").val(cli.telefono);
-  $("#modalConfirmarCobro").modal("show");
-}
-
-function finalizarVenta(modo) {
-  let total = parseFloat($("#txtTotal").text().replace(".", ""));
-  let nombre = $("#infoNombreTicket").val();
-  let tel = $("#infoTelTicket").val();
-  let fecha = new Date().toLocaleString();
-  db.ventasDia.push({ fecha, total, cliente: nombre });
-  localStorage.setItem("ventasDia", JSON.stringify(db.ventasDia));
-  localStorage.setItem("articulos", JSON.stringify(db.articulos));
-
-  let t = `RAMOS GENERALES\n${fecha}\nCliente: ${nombre}\n----------------\n`;
-  carrito.forEach(
-    (i) => (t += `${i.nombre} x${i.cantidad}: $${i.precio * i.cantidad}\n`),
-  );
-  t += `----------------\nTOTAL: $${total}\n¡Gracias Marcelo!`;
-
-  if (modo === "imprimir") {
-    const w = window.open("", "", "width=300,height=500");
-    w.document.write(`<pre>${t}</pre>`);
-    w.print();
-    w.close();
-  } else {
-    window.open(
-      `https://api.whatsapp.com/send?phone=54${tel}&text=${encodeURIComponent(t)}`,
-      "_blank",
-    );
-  }
-
-  carrito = [];
-  actualizarVista();
-  $("#modalConfirmarCobro").modal("hide");
-}
-
-function realizarCierreCaja() {
-  alert("Cierre: $" + db.ventasDia.reduce((a, b) => a + b.total, 0));
-  db.ventasDia = [];
-  localStorage.setItem("ventasDia", "[]");
-}
-function calcularVentasDia() {
-  return db.ventasDia.reduce((a, b) => a + b.total, 0);
-}
-function confirmarVolver() {
-  if (confirm("¿Seguro?")) $("#modalConfirmarCobro").modal("hide");
-}
+});
