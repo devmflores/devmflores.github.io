@@ -1,0 +1,107 @@
+:root {
+  --primary: #2d3436;
+  --accent: #00b894;
+  --sidebar-w: 65px;
+  --sidebar-exp: 240px;
+  --speed: 0.4s;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: #f4f7f6;
+  overflow-x: hidden;
+  color: var(--primary);
+}
+
+/* SIDEBAR */
+#sidebarRubros {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--sidebar-w);
+  background: #1e272e;
+  z-index: 1000;
+  transition: var(--speed) cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+}
+#sidebarRubros:hover {
+  width: var(--sidebar-exp);
+}
+#mainContent {
+  margin-left: var(--sidebar-w);
+  transition: var(--speed);
+  padding-bottom: 50px;
+}
+.title-sidebar {
+  opacity: 0;
+  transition: 0.3s;
+  white-space: nowrap;
+  color: #fff;
+}
+#sidebarRubros:hover .title-sidebar {
+  opacity: 1;
+}
+
+.btn-rubro {
+  text-align: left;
+  white-space: nowrap;
+  border: none;
+  color: #ced4da;
+  background: transparent;
+  padding: 12px 18px;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+.btn-rubro:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.btn-rubro.active {
+  background: var(--accent);
+  color: #fff;
+  font-weight: bold;
+}
+
+/* UI CARDS */
+.card-pos {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  background: #fff;
+}
+.btn,
+.form-control,
+.form-select {
+  border-radius: 10px;
+  transition: var(--speed);
+}
+
+/* LUPA IZQUIERDA EN DATATABLES */
+.dataTables_filter {
+  text-align: left !important;
+  float: none !important;
+  margin-bottom: 15px;
+}
+.dataTables_filter label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row-reverse;
+}
+
+.text-success-premium {
+  color: var(--accent) !important;
+  font-weight: 800;
+  animation: pulso 2s infinite;
+}
+@keyframes pulso {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}

@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Artics POS Pro - Ramos Generales</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="sidebarRubros" class="sidebar-collapsed">
+      <div class="p-3">
+        <h6 class="text-white small fw-bold mb-4 title-sidebar text-uppercase">
+          Rubros
+        </h6>
+        <div id="contenedorBotonesRubros" class="d-grid gap-2"></div>
+        <hr class="text-white-50 mt-4" />
+        <button
+          class="btn btn-outline-danger btn-sm w-100 mt-2"
+          onclick="limpiarFiltros()"
+        >
+          Limpiar Filtros
+        </button>
+      </div>
+    </div>
+
+    <div id="mainContent">
+      <nav class="navbar navbar-dark bg-dark shadow-sm p-3 mb-4">
+        <div class="container-fluid px-4">
+          <span class="navbar-brand fw-bold">RAMOS GENERALES - Artics</span>
+          <div class="d-flex gap-2">
+            <button
+              class="btn btn-outline-info btn-sm"
+              onclick="alert('Ventas del día: $' + calcularVentasDia())"
+            >
+              📊 Reporte
+            </button>
+            <button
+              class="btn btn-danger btn-sm"
+              onclick="realizarCierreCaja()"
+            >
+              🔒 Cierre
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container-fluid px-4">
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <div class="card card-pos p-4 mb-4">
+              <div class="mb-3">
+                <label class="small fw-bold text-secondary text-uppercase"
+                  >Clientes</label
+                >
+                <div class="input-group">
+                  <select
+                    id="selectCliente"
+                    class="form-select shadow-sm"
+                  ></select>
+                  <button
+                    class="btn btn-outline-secondary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalCliente"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label class="small fw-bold text-secondary text-uppercase"
+                  >Vendedores</label
+                >
+                <div class="input-group">
+                  <select
+                    id="selectVendedor"
+                    class="form-select shadow-sm"
+                  ></select>
+                  <button
+                    class="btn btn-outline-secondary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalVendedor"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <hr />
+
+              <div
+                class="d-flex justify-content-between align-items-center mb-2"
+              >
+                <label class="small fw-bold text-secondary text-uppercase mb-0"
+                  >Artículos</label
+                >
+                <div class="d-flex gap-1">
+                  <button
+                    class="btn btn-dark btn-sm fw-bold"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalArticulo"
+                  >
+                    + Artículo
+                  </button>
+                  <button
+                    class="btn btn-outline-dark btn-sm fw-bold"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalRubro"
+                  >
+                    + Rubro
+                  </button>
+                </div>
+              </div>
+              <input
+                type="text"
+                id="barcodeInput"
+                class="form-control form-control-lg mb-3"
+                placeholder="Código + Enter"
+                autofocus
+              />
+            </div>
+
+            <div class="card card-pos p-4">
+              <h6 class="fw-bold text-muted mb-3 text-uppercase small">
+                Catálogo Disponible
+              </h6>
+              <div class="table-responsive">
+                <table
+                  id="tablaBusqueda"
+                  class="table table-sm align-middle w-100 small"
+                >
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Stock</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="card card-pos p-4 h-100">
+              <h6 class="fw-bold text-muted mb-3 text-uppercase small">
+                Detalle de Venta
+              </h6>
+              <div class="table-responsive">
+                <table id="tablaCarrito" class="table align-middle w-100">
+                  <thead>
+                    <tr>
+                      <th>Detalle</th>
+                      <th>Precio</th>
+                      <th>Cant.</th>
+                      <th>Subtotal</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+
+              <div
+                class="mt-auto d-flex justify-content-between align-items-center border-top pt-4"
+              >
+                <div>
+                  <span class="text-muted small fw-bold">TOTAL</span>
+                  <h1 class="fw-bold mb-0">
+                    $ <span id="txtTotal">0.00</span>
+                  </h1>
+                </div>
+                <button
+                  class="btn btn-success btn-lg px-5 py-3 shadow-hover fw-bold"
+                  onclick="prepararCobro()"
+                >
+                  FINALIZAR VENTA
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalCliente" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content card-pos p-3">
+          <div class="modal-header border-0"><h5>Nuevo Cliente</h5></div>
+          <div class="modal-body">
+            <input
+              type="text"
+              id="cNombre"
+              class="form-control mb-2"
+              placeholder="Nombre"
+            />
+            <input
+              type="text"
+              id="cTelefono"
+              class="form-control mb-2"
+              placeholder="Teléfono"
+            />
+            <input
+              type="text"
+              id="cLocalidad"
+              class="form-control"
+              placeholder="Localidad"
+              value="Córdoba"
+            />
+          </div>
+          <div class="modal-footer border-0">
+            <button class="btn btn-light" data-bs-dismiss="modal">Salir</button
+            ><button class="btn btn-dark" onclick="guardarCliente()">
+              Registrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalVendedor" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content card-pos p-3">
+          <div class="modal-header border-0"><h5>Nuevo Vendedor</h5></div>
+          <div class="modal-body">
+            <input
+              type="text"
+              id="vNombre"
+              class="form-control mb-2"
+              placeholder="Nombre"
+            />
+            <input
+              type="number"
+              id="vComision"
+              class="form-control"
+              placeholder="% Comisión"
+            />
+          </div>
+          <div class="modal-footer border-0">
+            <button class="btn btn-light" data-bs-dismiss="modal">Salir</button
+            ><button class="btn btn-dark" onclick="guardarVendedor()">
+              Registrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalArticulo" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content card-pos p-3">
+          <div class="modal-header border-0"><h5>Nuevo Artículo</h5></div>
+          <div class="modal-body">
+            <input
+              type="text"
+              id="pCodigo"
+              class="form-control mb-2"
+              placeholder="Código"
+            />
+            <input
+              type="text"
+              id="pNombre"
+              class="form-control mb-2"
+              placeholder="Nombre"
+            />
+            <select id="pRubro" class="form-select mb-2"></select>
+            <input
+              type="number"
+              id="pPrecio"
+              class="form-control mb-2"
+              placeholder="Precio"
+            />
+            <input
+              type="number"
+              id="pStock"
+              class="form-control"
+              placeholder="Stock"
+            />
+          </div>
+          <div class="modal-footer border-0">
+            <button class="btn btn-light" data-bs-dismiss="modal">Salir</button
+            ><button class="btn btn-dark" onclick="guardarNuevoArticulo()">
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalRubro" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content card-pos p-3">
+          <div class="modal-header border-0"><h5>Nuevo Rubro</h5></div>
+          <div class="modal-body">
+            <input
+              type="text"
+              id="rId"
+              class="form-control mb-2"
+              placeholder="ID (Ej: BEB)"
+            />
+            <input
+              type="text"
+              id="rNombre"
+              class="form-control"
+              placeholder="Nombre"
+            />
+          </div>
+          <div class="modal-footer border-0">
+            <button class="btn btn-light" data-bs-dismiss="modal">Salir</button
+            ><button class="btn btn-dark" onclick="guardarRubro()">
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="modalConfirmarCobro"
+      tabindex="-1"
+      data-bs-backdrop="static"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-pos p-3">
+          <div class="modal-header border-0">
+            <h5 class="fw-bold">Cobrar Venta</h5>
+          </div>
+          <div class="modal-body">
+            <input
+              type="text"
+              id="infoNombreTicket"
+              class="form-control mb-2"
+              placeholder="Nombre"
+            />
+            <input
+              type="text"
+              id="infoTelTicket"
+              class="form-control mb-2"
+              placeholder="WhatsApp"
+            />
+            <p class="text-center fw-bold fs-4 text-success">
+              Total: $<span id="totalConfirmar">0.00</span>
+            </p>
+          </div>
+          <div class="modal-footer border-0 flex-column gap-2">
+            <button
+              class="btn btn-success w-100 fw-bold"
+              onclick="finalizarVenta('imprimir')"
+            >
+              🖨️ IMPRIMIR
+            </button>
+            <button
+              class="btn btn-primary w-100 fw-bold"
+              onclick="finalizarVenta('whatsapp')"
+            >
+              📱 WHATSAPP
+            </button>
+            <button
+              class="btn btn-light border w-100"
+              onclick="confirmarVolver()"
+            >
+              ↩️ VOLVER
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
